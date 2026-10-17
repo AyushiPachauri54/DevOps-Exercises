@@ -1,0 +1,29 @@
+# Exercise 08 - hello-world.sh run for real, plus the Git steps done in a throw-away LOCAL repo (no push, no Jenkins)
+$ cd Exercise08 && ls -l hello-world.sh && ./hello-world.sh
+-rwxr-xr-x 1 root root 35 Oct 17 15:50 hello-world.sh
+Hello, Jenkins!
+[exit code: 0]
+$ cd Exercise08 && sh -xe hello-world.sh
++ echo Hello, Jenkins!
+Hello, Jenkins!
+[exit code: 0]
+$ cd /tmp/devops-sample-code && cp /home/claude/DevOps-Exercises/Exercise08/hello-world.sh . && git init -b main && git add hello-world.sh && git status
+Initialized empty Git repository in /tmp/devops-sample-code/.git/
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+	new file:   hello-world.sh
+
+[exit code: 0]
+$ cd /tmp/devops-sample-code && git -c user.name=demo -c user.email=demo@example.com commit -m 'Add hello-world.sh'
+[main (root-commit) fd35c49] Add hello-world.sh
+ 1 file changed, 2 insertions(+)
+ create mode 100755 hello-world.sh
+[exit code: 0]
+$ cd /tmp/devops-sample-code && git log --oneline && git branch
+fd35c49 Add hello-world.sh
+* main
+[exit code: 0]
