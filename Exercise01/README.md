@@ -1,42 +1,61 @@
-# Exercise 1 – Hello Pod (Kubernetes getting started)
+Exercise 1 – Hello Pod (Kubernetes Getting Started)
 
-**Status: 🔴 BLOCKED – written but NOT executed.** Minikube, kubectl and Docker are not available in the environment where this was prepared. Only the YAML syntax was checked.
+Deploy an Nginx web server on a local Kubernetes cluster using Minikube and kubectl.
 
-## Question (original text in [`QUESTION.md`](QUESTION.md))
-You are a DevOps engineer at Zepto. Deploy a web app (simulated with the `nginx` image) on Kubernetes so it is always running, portable and can be scaled later:
-1. `minikube start` 2. `kubectl run hello-k8s --image=nginx --port=80` 3. `kubectl get pods` 4. `kubectl expose pod hello-k8s --type=NodePort --port=80` 5. `minikube service hello-k8s` → Nginx welcome page.
+Project Structure
 
-## Objective
-Run the first container inside Kubernetes (as a **Pod**), make it reachable with a **Service**, and open it in a browser.
+Exercise01/
+├── run.sh
+├── hello-pod.yaml
+├── QUESTION.md
+├── README.md
+├── logs/
+└── screenshots/
 
-## Prerequisites
-Docker (or a VM driver), Minikube, kubectl. Install commands for Linux/macOS/Windows/WSL are in `QUESTION.md`.
+How It Works
 
-## Files
-| File | Purpose |
-|---|---|
-| `run.sh` | all commands from the question, in order |
-| `hello-pod.yaml` | the same Pod + Service as YAML (declarative form of steps 2 and 4) |
+1. Minikube starts a local Kubernetes cluster.
+2. A Pod is created using the Nginx container image.
+3. kubectl verifies that the Pod is running.
+4. A NodePort Service exposes the Nginx Pod.
+5. Minikube provides access to the Nginx welcome page.
 
-## How to run
-```bash
-bash run.sh
-minikube service hello-k8s     # keep this terminal open when using the Docker driver
-```
+Steps to Run
 
-## Simple explanation (for viva)
-* **Pod** = smallest deployable unit; wraps one or more containers.
-* A Pod IP works only inside the cluster, so we add a **Service**. `NodePort` opens a port on the node so it can be reached from outside.
-* `minikube service` finds that port and opens it for us.
-* A bare Pod is not rescheduled if it dies – that is why Exercises 2, 3 and 10 use Deployments/ReplicaSets.
+1. Start Minikube
 
-## Verification
-| Check | Result |
-|---|---|
-| YAML syntax of `hello-pod.yaml` | ✅ parsed – [`logs/static-checks.txt`](logs/static-checks.txt) |
-| Cluster started, pod Running, nginx page opened | ⛔ **not run** |
+minikube start
 
-`screenshots/terminal-capture-static-checks.png` shows only the YAML check – it is **not** proof that the pod ran.
+2. Create the Nginx Pod
 
-## To finish (needs you)
-Run `bash run.sh` on a machine with Minikube and save screenshots in `screenshots/`: `01-pods-running.png`, `02-service.png`, `03-nginx-page.png`; then update the status.
+kubectl run hello-k8s --image=nginx --port=80
+
+3. Check the Pod status
+
+kubectl get pods
+
+4. Expose the Pod as a Service
+
+kubectl expose pod hello-k8s --type=NodePort --port=80
+
+5. Access the Nginx application
+
+minikube service hello-k8s
+
+The Nginx welcome page should open in the browser.
+
+Verification
+
+Verify that the Pod is running, the Service is available, and the Nginx welcome page can be accessed.
+
+Screenshots
+
+Add screenshots after running the exercise successfully:
+
+* Pod status in the terminal
+* Kubernetes Service details
+* Nginx welcome page in the browser
+
+Tech Stack
+
+Kubernetes, Minikube, kubectl, Docker, and Nginx.
