@@ -1,61 +1,71 @@
-Exercise 1 – Hello Pod (Kubernetes Getting Started)
+# Exercise 1 – Hello Pod (Kubernetes Getting Started)
 
 Deploy an Nginx web server on a local Kubernetes cluster using Minikube and kubectl.
 
-Project Structure
+## Project Structure
 
-Exercise01/
-├── run.sh
-├── hello-pod.yaml
-├── QUESTION.md
-├── README.md
-├── logs/
-└── screenshots/
+- `run.sh` — Script to execute the Kubernetes setup commands
+- `hello-pod.yaml` — Kubernetes Pod configuration
+- `QUESTION.md` — Assignment instructions
+- `README.md` — Exercise documentation
+- `logs/` — Execution logs and verification results
+- `screenshots/` — Screenshots of the exercise
 
-How It Works
+## How It Works
 
 1. Minikube starts a local Kubernetes cluster.
 2. A Pod is created using the Nginx container image.
-3. kubectl verifies that the Pod is running.
+3. kubectl checks the Pod status.
 4. A NodePort Service exposes the Nginx Pod.
 5. Minikube provides access to the Nginx welcome page.
 
-Steps to Run
+## Steps to Run
 
-1. Start Minikube
+### 1. Start Minikube
 
+```bash
 minikube start
+```
 
-2. Create the Nginx Pod
+### 2. Create the Nginx Pod
 
+```bash
 kubectl run hello-k8s --image=nginx --port=80
+```
 
-3. Check the Pod status
+### 3. Check Pod Status
 
+```bash
 kubectl get pods
+```
 
-4. Expose the Pod as a Service
+### 4. Expose the Pod
 
+```bash
 kubectl expose pod hello-k8s --type=NodePort --port=80
+```
 
-5. Access the Nginx application
+### 5. Access the Nginx Service
 
+```bash
 minikube service hello-k8s
+```
 
-The Nginx welcome page should open in the browser.
+## Screenshots
 
-Verification
+The exercise includes screenshots of the Kubernetes Pod, Service, and Nginx welcome page.
 
-Verify that the Pod is running, the Service is available, and the Nginx welcome page can be accessed.
+## Verification Results
 
-Screenshots
+- Kubernetes cluster started successfully.
+- Nginx Pod reached the Running state.
+- NodePort Service was created successfully.
+- Nginx welcome page was accessible through Minikube.
 
-Add screenshots after running the exercise successfully:
+## Technologies Used
 
-* Pod status in the terminal
-* Kubernetes Service details
-* Nginx welcome page in the browser
-
-Tech Stack
-
-Kubernetes, Minikube, kubectl, Docker, and Nginx.
+- Kubernetes
+- Minikube
+- kubectl
+- Docker
+- Nginx
