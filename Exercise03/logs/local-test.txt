@@ -1,0 +1,17 @@
+# Exercise 03 - LOCAL test of the Flash Sale app (Flask dev server; gunicorn/Docker/Minikube not available)
+$ curl -s http://127.0.0.1:5000/
+{"message":"Welcome to Big Sale!","pod":"vm","ts":1792252300.6799843}
+[exit code: 0]
+$ curl -s 'http://127.0.0.1:5000/buy?user=123'
+{"item":"Laptop","served_by_pod":"vm","status":"success","time":"15:51:40","user":"123"}
+[exit code: 0]
+$ curl -s http://127.0.0.1:5000/buy
+{"item":"Headphones","served_by_pod":"vm","status":"success","time":"15:51:40","user":"user551"}
+[exit code: 0]
+$ curl -s http://127.0.0.1:5000/health
+{"pod":"vm","status":"healthy"}
+[exit code: 0]
+$ cd Exercise03 && python3 /tmp/yamlcheck.py flashsale-replicaset.yaml
+flashsale-replicaset.yaml: OK  kind=ReplicaSet  name=flashsale-rs  apiVersion=apps/v1
+flashsale-replicaset.yaml: OK  kind=Service  name=flashsale-svc  apiVersion=v1
+[exit code: 0]

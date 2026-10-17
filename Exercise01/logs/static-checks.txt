@@ -1,0 +1,5 @@
+# Exercise 01 - STATIC check only (Minikube/kubectl NOT available in this sandbox)
+$ cd Exercise01 && python3 /tmp/yamlcheck.py hello-pod.yaml
+hello-pod.yaml: OK  kind=Pod  name=hello-k8s  apiVersion=v1
+hello-pod.yaml: OK  kind=Service  name=hello-k8s  apiVersion=v1
+[exit code: 0]
