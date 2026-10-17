@@ -1,0 +1,19 @@
+# Exercise 10 - LOCAL test of both Flask services on ports 8081/8082 (PORT env var); multi-node Minikube part NOT run
+$ curl -s http://127.0.0.1:8081/products
+[{"id":1,"name":"Laptop","price":1200},{"id":2,"name":"Phone","price":800},{"id":3,"name":"Headphones","price":150}]
+[exit code: 0]
+$ curl -s http://127.0.0.1:8082/cart
+[]
+[exit code: 0]
+$ curl -s -X POST http://127.0.0.1:8082/cart -H 'Content-Type: application/json' -d '{"id": 1, "name": "Laptop", "quantity": 1}'
+[{"id":1,"name":"Laptop","quantity":1}]
+[exit code: 0]
+$ curl -s http://127.0.0.1:8082/cart
+[{"id":1,"name":"Laptop","quantity":1}]
+[exit code: 0]
+$ cd Exercise10 && python3 /tmp/yamlcheck.py product_catalog_deployment.yaml shopping_cart_deployment.yaml product_catalog_service.yaml shopping_cart_service.yaml
+product_catalog_deployment.yaml: OK  kind=Deployment  name=product-catalog  apiVersion=apps/v1
+shopping_cart_deployment.yaml: OK  kind=Deployment  name=shopping-cart  apiVersion=apps/v1
+product_catalog_service.yaml: OK  kind=Service  name=product-catalog-service  apiVersion=v1
+shopping_cart_service.yaml: OK  kind=Service  name=shopping-cart-service  apiVersion=v1
+[exit code: 0]
