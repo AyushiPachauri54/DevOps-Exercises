@@ -1,0 +1,6 @@
+# Exercise 04 - LOCAL test of the Flask REST API (Docker networking part NOT run: no Docker here)
+$ curl -s http://127.0.0.1:5001/about
+{"description":"This is a simple REST API built with Flask.","name":"Simple REST API","version":"1.0"}
+[exit code: 0]
+$ curl -s -o /dev/null -w 'HTTP status: %{http_code}' http://127.0.0.1:5001/about
+HTTP status: 200[exit code: 0]

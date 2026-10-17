@@ -1,0 +1,7 @@
+# Exercise 05 - STATIC checks only (AppArmor + Docker NOT available in this sandbox)
+$ cd Exercise05 && python3 -m py_compile app.py apply_apparmor.py test_restricted_actions.py && echo 'all 3 python files compile'
+all 3 python files compile
+[exit code: 0]
+$ which apparmor_parser docker || echo 'apparmor_parser and docker: NOT INSTALLED -> profile cannot be loaded, container tests cannot run'
+apparmor_parser and docker: NOT INSTALLED -> profile cannot be loaded, container tests cannot run
+[exit code: 0]
