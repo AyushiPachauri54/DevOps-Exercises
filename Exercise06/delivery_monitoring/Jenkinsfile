@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    stages {
+        stage('Pre-check Docker') {
+            steps {
+                sh 'docker --version'
+                sh 'docker info > /dev/null'
+            }
+        }
+        // The manual copied files from a hard-coded local path. Since the Jenkinsfile lives in the
+        // same Git repo as the code (Pipeline script from SCM), Jenkins already checks them out into
+        // $WORKSPACE, so no copy stage is needed.
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t delivery_metrics .'
+            }
+        }
+        stage('Run Application') {
+            steps {
+                sh '''
+                docker rm -f delivery_metrics || true
+                docker run -d -p 8000:8000 --name delivery_metrics delivery_metrics
+                '''
+            }
+        }
+        stage('Run Prometheus & Grafana') {
+            steps {
+                // NOTE: if Jenkins itself runs inside Docker, $WORKSPACE is a path inside the Jenkins
+                // container and bind mounts will not see these files on the host. See README (Known issues).
+                sh '''
+                docker rm -f prometheus grafana || true
+                docker run -d --name prometheus -p 9090:9090 \
+                  -v $WORKSPACE/prometheus.yml:/etc/prometheus/prometheus.yml \
+                  -v $WORKSPACE/alert_rules.yml:/etc/prometheus/alert_rules.yml \
+                  prom/prometheus
+                docker run -d --name grafana -p 3000:3000 grafana/grafana
+                '''
+            }
+        }
+    }
+}

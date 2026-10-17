@@ -1,0 +1,11 @@
+# Exercise 06 - STATIC checks only (prometheus_client, Docker, Prometheus, Grafana NOT available in this sandbox)
+$ cd Exercise06/delivery_monitoring && python3 -m py_compile delivery_metrics.py && echo 'delivery_metrics.py compiles'
+delivery_metrics.py compiles
+[exit code: 0]
+$ cd Exercise06/delivery_monitoring && python3 /tmp/yamlcheck6.py prometheus.yml alert_rules.yml
+prometheus.yml: valid YAML, top-level keys = ['global', 'scrape_configs', 'rule_files']
+alert_rules.yml: valid YAML, top-level keys = ['groups']
+[exit code: 0]
+$ python3 -c 'import prometheus_client' 2>&1 | tail -1
+ModuleNotFoundError: No module named 'prometheus_client'
+[exit code: 0]
