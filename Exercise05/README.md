@@ -1,36 +1,74 @@
-# Exercise 5 – Docker security with AppArmor and Python
+# Exercise 5 – Docker Security with AppArmor and Python
 
-**Status: 🔴 BLOCKED – written but NOT executed.** Needs Linux with AppArmor + Docker. Only a Python syntax check was done.
+## Overview
 
-## Question (original text in [`QUESTION.md`](QUESTION.md))
-Containerise a Flask app, write an **AppArmor profile** that blocks sensitive files (`/etc`, `/var`) and execution of binaries, load it with `apparmor_parser`, run the container with `--security-opt apparmor=my-apparmor-profile`, apply it using the **Docker SDK for Python** (`apply_apparmor.py`), test restricted actions (`test_restricted_actions.py`: read `/etc/passwd`, run `/bin/bash`), and answer 5 questions.
+This exercise demonstrates how to secure a Flask application running inside a Docker container using AppArmor. An AppArmor profile is configured and applied to the container using Docker's security options and the Docker SDK for Python.
 
-## Files
-`app.py`, `Dockerfile`, `my-apparmor-profile`, `apply_apparmor.py`, `test_restricted_actions.py`, `run.sh`.
+The exercise also tests whether restricted actions, such as reading `/etc/passwd` and executing `/bin/bash`, are prevented by the configured security profile.
 
-## How to run (Ubuntu/Debian host with Docker)
+## Project Files
+
+- `app.py` – Flask application.
+- `Dockerfile` – Configuration for building the Docker image.
+- `my-apparmor-profile` – AppArmor security profile.
+- `apply_apparmor.py` – Applies the AppArmor profile using the Docker SDK for Python.
+- `test_restricted_actions.py` – Tests restricted actions inside the container.
+- `run.sh` – Script to run the exercise.
+- `QUESTION.md` – Original assignment questions and answers.
+- `logs/` – Directory for execution logs and verification results.
+
+## Requirements
+
+- Linux system with AppArmor enabled.
+- Docker installed and running.
+- `apparmor_parser` utility.
+- Python 3 and pip.
+- Docker SDK for Python.
+
+**Note:** AppArmor is a Linux security feature. Run this exercise on a compatible Linux system with AppArmor enabled.
+
+## Execution
+
+Navigate to the Exercise 5 directory and run:
+
 ```bash
 bash run.sh
 ```
 
-## Changes to the manual
-1. The manual's profile starts with `/usr/bin/python3 { … }`. Docker selects a profile **by name**, so `apparmor=my-apparmor-profile` would not find it. I declared `profile my-apparmor-profile flags=(attach_disconnected,mediate_deleted) { … }` (the form Docker's own default profile uses) and added `#include <abstractions/base>`.
-2. The manual's `deny /etc/** r` would also stop Python from reading its own config and probably break the container; I deny only `/etc/passwd` and `/etc/shadow`. **This profile is untested – expect to adjust it when you run it** (check `dmesg | grep apparmor` or `journalctl` for DENIED lines).
-3. Scripts now also remove the container after stopping it.
-4. The "expected output" in the manual (exit 1 / 126 with empty output) is only an example; the real exit codes/messages will be what your run prints – put those in your report.
+The script is intended to perform the exercise's setup and testing steps. If any command fails, investigate the error before proceeding.
 
-## Simple explanation
-AppArmor is a Linux security module: a profile lists what a program may touch. With Docker, `--security-opt apparmor=<name>` confines the container to that profile, so even if the app is hacked it cannot read secrets or start a shell. `deny` rules always beat `allow` rules.
+## Security Configuration
+
+The AppArmor profile is named `my-apparmor-profile` and defines restrictions intended to limit access to sensitive files and execution of selected binaries.
+
+The Docker container is configured to use the profile through Docker's `security-opt` option. The Python scripts use the Docker SDK to apply the configuration and test restricted actions.
 
 ## Verification
-| Check | Result |
-|---|---|
-| 3 Python files compile | ✅ [`logs/static-checks.txt`](logs/static-checks.txt) |
-| `apparmor_parser`, Docker present here | ❌ not installed → profile not loaded, no container tests |
-| profile accepted, container runs, `cat /etc/passwd` and `/bin/bash` blocked | ⛔ **not run** |
 
-## Answers
-1. AppArmor adds an extra layer: it limits files, network and capabilities the container's processes can use. 2. A profile defines allowed/denied actions (files, execution, network, capabilities) so a compromised app is contained. 3. `/etc` and `/var` hold configs, users, logs and secrets – leaking or modifying them leads to privilege escalation. 4. Network access, executing binaries, writing paths, mounting, capabilities such as `sys_admin`. 5. `docker inspect <container>` → `HostConfig.SecurityOpt` (also `aa-status` on the host, and `cat /proc/1/attr/current` inside the container).
+After execution, verify the following:
 
-## To finish (needs you)
-`bash run.sh` on Ubuntu; screenshots: `01-aa-status.png`, `02-apply-output.png`, `03-restricted-tests.png`.
+- AppArmor is enabled and the profile is loaded.
+- The Docker image builds successfully.
+- The container starts with the intended AppArmor profile.
+- The test for reading `/etc/passwd` produces the expected security result.
+- The test for executing `/bin/bash` produces the expected security result.
+- Docker inspection and AppArmor logs are checked for confirmation.
+
+Record the actual output and results from your run. Do not mark a test as passed unless it has been executed and verified.
+
+## Screenshots
+
+Save screenshots of your actual execution in the `screenshots/` directory.
+
+Suggested filenames:
+
+- `01-aa-status.png` – AppArmor status.
+- `02-apply-output.png` – Output from applying the profile.
+- `03-restricted-tests.png` – Results of the restricted-action tests.
+
+
+
+
+## Conclusion
+
+This exercise demonstrates the use of AppArmor to add security restrictions to Docker containers and the use of Python's Docker SDK to configure and inspect container security. The final results should be based on the actual execution and verification performed.
