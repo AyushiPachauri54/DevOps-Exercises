@@ -1,37 +1,70 @@
-# Exercise 3 – Scaling a Flask app with ReplicaSets (Flash Sale)
+# Exercise 3: Scaling Flask App Using ReplicaSets
 
-**Status: 🟡 PARTIAL.** The app endpoints and YAML were tested; image build, ReplicaSet creation, scaling and self-healing on Minikube were **NOT run**.
+## Objective
+The objective of this exercise is to deploy a Flask application on Kubernetes using Minikube and ReplicaSets. It demonstrates how to manage multiple replicas, scale the application, and test pod self-healing.
 
-## Question (original text in [`QUESTION.md`](QUESTION.md))
-Build a "Big Sale" Flask app (`/`, `/buy`, `/health`), containerise it, run it as a **ReplicaSet of 3 pods** on single-node Minikube (probes, resources, ClusterIP Service), **scale to 5**, **delete a pod** and watch it return, show pod placement (`kubectl get pods -o wide`), and answer the questions.
+## Application
+The Flask application provides three endpoints:
+- `/` – Displays application information.
+- `/buy` – Simulates a product purchase.
+- `/health` – Checks application health.
 
-## Files
-`app.py`, `Dockerfile`, `flashsale-replicaset.yaml` (ReplicaSet + Service), `run.sh`.
+## Steps to Run
 
-## How to run (machine with Minikube)
+### 1. Build the Docker Image
+Build the Docker image and make it available to Minikube.
+
 ```bash
-bash run.sh
+docker build -t flashsale:1.0 .
+minikube image load flashsale:1.0
 ```
 
-## Fixes to the manual (it would not work as written)
-1. Dockerfile copied `ex3-flash-sale.py` but started `app:app` → file must be `app.py`.
-2. Manual built `flask-app`, the YAML used `flashsale:1.0`, and later commands scaled `flask-app-rs` (does not exist; the RS is `flashsale-rs`). Everything now uses `flashsale:1.0` / `flashsale-rs`.
-3. The image must be built inside Minikube's Docker **before** pods can start; added `imagePullPolicy: IfNotPresent`.
+### 2. Deploy the Application
+Apply the Kubernetes configuration to create the ReplicaSet and Service.
 
-## Simple explanation
-A **ReplicaSet** keeps N identical pods running. Delete one → a new one is created. Scale → change N. Identical copies share traffic, like opening more checkout counters in a flash sale. `/health` feeds the readiness probe (ready for traffic?) and liveness probe (still alive?). The `pod` field in the JSON shows which pod answered.
+```bash
+kubectl apply -f flashsale-replicaset.yaml
+```
 
-## Verification
-| Check | Result |
-|---|---|
-| `/`, `/buy?user=123`, `/buy`, `/health` return correct JSON locally | ✅ really run – [`logs/local-test.txt`](logs/local-test.txt) (pod name shows the sandbox hostname `vm`) |
-| ReplicaSet + Service YAML parses | ✅ syntax only |
-| gunicorn start, image build, 3 pods, scale 5, delete & recreate, `-o wide` | ⛔ **not run** (no Docker/Minikube; gunicorn not installed here) |
+### 3. Check the Replicas
+Verify that the ReplicaSet is running with three replicas.
 
-![local test](screenshots/terminal-capture-local-test.png)
+```bash
+kubectl get pods
+kubectl get rs
+```
 
-## Q&A
-1. Initial replicas: **3**. 2. Pods after apply: **3**. 3. Scale to 5: Kubernetes creates **2 more** pods. 4. Delete a pod: the ReplicaSet creates a **replacement**. 5. How is the count kept? A controller loop compares desired vs actual and creates/deletes pods. 6. Nodes: **1**. 7. Placement: all pods on the single node `minikube` (confirm with `kubectl get pods -o wide`).
+### 4. Scale the Application
+Increase the number of replicas from three to five.
 
-## To finish (needs you)
-`bash run.sh`; screenshots: `01-3-pods.png`, `02-scaled-5.png`, `03-after-delete.png`, `04-pods-wide.png`.
+```bash
+kubectl scale rs flashsale-rs --replicas=5
+kubectl get pods
+```
+
+### 5. Test Self-Healing
+Delete one of the running pods and check whether Kubernetes creates a replacement.
+
+```bash
+kubectl delete pod <pod-name>
+kubectl get pods
+```
+
+### 6. Access the Application
+Get the service URL using Minikube.
+
+```bash
+minikube service flashsale-svc --url
+```
+
+### 7. Test the Endpoints
+Use the service URL to test the application endpoints.
+
+```bash
+curl http://<service-url>/
+curl "http://<service-url>/buy?user=alice"
+curl http://<service-url>/health
+```
+
+## Result
+This exercise demonstrates deploying a Flask application using Kubernetes ReplicaSets, scaling from three to five replicas, and testing pod self-healing and application endpoints.
