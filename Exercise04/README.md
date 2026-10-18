@@ -51,7 +51,6 @@ docker info
 docker ps
 ```
 
-Expected result: Docker version and system information are displayed.
 
 ![Docker Verification](screenshots/01-docker-verification.png)
 
@@ -66,7 +65,6 @@ mkdir docker-networking-lab
 cd docker-networking-lab
 ```
 
-If you are already working inside your Exercise 4 folder, continue there.
 
 ---
 
@@ -84,7 +82,6 @@ Verify that the network exists.
 docker network ls
 ```
 
-Expected result: `my-bridge-net` appears with the `bridge` driver.
 
 ![Network Created](screenshots/02-network-created.png)
 
@@ -98,7 +95,7 @@ Display the network configuration.
 docker network inspect my-bridge-net
 ```
 
-Check the network name, driver, subnet, gateway, and connected containers.
+
 
 ![Network Inspected](screenshots/03-network-inspected.png)
 
@@ -143,7 +140,7 @@ Verify that the image has been created.
 docker images
 ```
 
-Expected result: The `flask-api` image appears in the image list.
+
 
 ![Flask Image](screenshots/04-flask-image-built.png)
 
@@ -240,7 +237,7 @@ Check which containers are running.
 docker ps
 ```
 
-Expected result: The `mysql`, `redis`, and `flask` containers appear in the list.
+
 
 ![Running Containers](screenshots/06-containers-running.png)
 
@@ -257,7 +254,7 @@ docker exec flask getent hosts redis
 
 Docker's embedded DNS resolves container names on a user-defined bridge network.
 
-Expected result: Each command returns an IP address for the relevant container.
+
 
 ![DNS Resolution](screenshots/07-dns-resolution.png)
 
@@ -289,7 +286,7 @@ Connect to MySQL and list the databases.
 docker exec mysql mysql -uroot -prootpass -e "SHOW DATABASES;"
 ```
 
-Expected result: The output includes `devopsdb` and MySQL system databases.
+
 
 ![MySQL Test](screenshots/09-mysql-test.png)
 
@@ -303,7 +300,7 @@ Test the API after all three containers have been started.
 curl http://localhost:5001/about
 ```
 
-Expected result: The API returns its JSON response successfully.
+
 
 ![Final API Test](screenshots/10-final-api-test.png)
 
