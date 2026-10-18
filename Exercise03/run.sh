@@ -5,7 +5,7 @@ minikube start --nodes=1
 kubectl get nodes
 eval $(minikube docker-env)
 docker build -t flashsale:1.0 .          # build BEFORE applying so the pods can start
-kubectl apply -f flashsale-replicaset.yaml
+kubectl apply -f replicaset.yaml
 kubectl get rs; kubectl get pods
 kubectl scale rs flashsale-rs --replicas=5
 kubectl get rs; kubectl get pods
